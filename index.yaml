@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  pock-helm-chart:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-05-13T15:37:22.163171591+03:00"
+    description: A Helm chart for Kubernetes
+    digest: ab732f0a52f09e45ef3d0c77935f30ac37e44c3432bcc43e0dd7c14148e68847
+    name: pock-helm-chart
+    urls:
+    - https://github.com/denisshav/helm-chart/releases/download/pock-helm-chart-0.1.0/pock-helm-chart-0.1.0.tgz
+    version: 0.1.0
+generated: "2021-05-13T15:37:21.710714855+03:00"
