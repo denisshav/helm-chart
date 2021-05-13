@@ -1,0 +1,91 @@
+# Default values for tinote-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+deploy:
+  - name: frontend
+    serviceType: ClusterIP
+    port: 80
+    targetPort: 80
+    replicas: 2
+    strategy:
+      maxSurge: 25%
+      maxUnavailable: 25%
+      type: RollingUpdate
+    image: denisshav/frontend:latest
+    imagePullPolicy: Always
+    env: 
+      - name: NGINX_PORT 
+        value: "80"
+      - name: "REACT_APP_BACKEND_HOST" 
+        value: "backend-service.default"
+      - name: REACT_APP_BACKEND_PORT 
+        value: "8080"
+
+  - name: backend
+    serviceType: ClusterIP
+    port: 8080
+    targetPort: 8080
+    replicas: 2
+    strategy:
+      maxSurge: 25%
+      maxUnavailable: 25%
+      type: RollingUpdate
+    image: denisshav/backend:latest
+    imagePullPolicy: Always
+    env: 
+      - name: PORT 
+        value: "8080"
+      - name: TOKEN_SECRET 
+        value: "asdafasgasfa"
+      - name: DB_CONNECT 
+        value: "mongodb+srv://denisTest:123123123123@tinode-cluster.8pnki.mongodb.net/tinode?retryWrites=true&w=majority"
+
+host: 35.228.193.35.nip.io
+
+controller:
+  service: 
+    externalIPs: 35.228.193.35
+
+ingress:
+  enabled: "true"
+  hosts:
+    - paths:
+      - path: /api
+        # pathType: Prefix
+        serviceName: backend-service
+        servicePort: 8080
+      - path: /
+        # pathType: Prefix
+        serviceName: frontend-service
+        servicePort: 80
+
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: 
+  memory: 512Mi  
+  cpu: 250m  
+  request:  
+    memory: 256Mi 
+    cpu: 50m
+  quota: true
+  limits: 
+    cpu: 2
+    memory: 4Gi
+
+autoscaling:
+  enabled: true
+  hpas:
+    - name: frontend
+      kind: Deployment
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 50
+    - name: backend
+      kind: Deployment
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationPercentage: 50
